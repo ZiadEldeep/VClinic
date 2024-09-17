@@ -1,3 +1,4 @@
+// @/component/AddressForm
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { useForm } from 'react-hook-form';
@@ -6,12 +7,12 @@ import { AddressFormData, addressSchema } from '@/lib/schemas/addressSchema';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 
-const AddressForm = () => {
+const AddressForm = ({refetch}:{refetch:()=>void}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: AddressFormData) => {
     try {
       const response = await fetch('/api/addresses', {
         method: 'POST',
@@ -21,6 +22,7 @@ const AddressForm = () => {
 
       if (response.ok) {
         toast.success('Address created successfully!');
+        refetch()
       } else {
         toast.error('Failed to create address.');
       }
@@ -63,7 +65,7 @@ const AddressForm = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">Create Address</Button>
+          <Button className='bg-[#5D87FF] hover:bg-[#5381fe]' htmlType="submit">Create Address</Button>
         </Form.Item>
       </Form>
     </motion.div>

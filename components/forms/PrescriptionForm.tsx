@@ -1,3 +1,5 @@
+// @/component/PrescriptionForm
+
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { useForm } from 'react-hook-form';
@@ -6,7 +8,7 @@ import { PrescriptionFormData, prescriptionSchema } from '@/lib/schemas/prescrip
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 
-const PrescriptionForm = () => {
+const PrescriptionForm = ({refetch}:{refetch:()=>void}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
   });
@@ -21,6 +23,7 @@ const PrescriptionForm = () => {
 
       if (response.ok) {
         toast.success('Prescription created successfully!');
+        refetch()
       } else {
         toast.error('Failed to create prescription.');
       }
@@ -48,7 +51,7 @@ const PrescriptionForm = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">Create Prescription</Button>
+          <Button className='bg-[#5D87FF] hover:bg-[#5381fe]' htmlType="submit">Create Prescription</Button>
         </Form.Item>
       </Form>
     </motion.div>

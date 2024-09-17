@@ -1,3 +1,5 @@
+// @/component/PhysicianForm
+
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { useForm } from 'react-hook-form';
@@ -6,7 +8,7 @@ import { PhysicianFormData, physicianSchema } from '@/lib/schemas/physicianSchem
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 
-const PhysicianForm = () => {
+const PhysicianForm = ({refetch}:{refetch:()=>void}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<PhysicianFormData>({
     resolver: zodResolver(physicianSchema),
   });
@@ -21,6 +23,7 @@ const PhysicianForm = () => {
 
       if (response.ok) {
         toast.success('Physician created successfully!');
+        refetch()
       } else {
         toast.error('Failed to create physician.');
       }
@@ -53,7 +56,7 @@ const PhysicianForm = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">Create Physician</Button>
+          <Button className='bg-[#5D87FF] hover:bg-[#5381fe]' htmlType="submit">Create Physician</Button>
         </Form.Item>
       </Form>
     </motion.div>

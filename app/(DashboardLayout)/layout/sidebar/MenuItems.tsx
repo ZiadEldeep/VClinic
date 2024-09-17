@@ -1,11 +1,16 @@
 import {
   IconAperture,
   IconCopy,
+  IconMapPin,
   IconLayoutDashboard,
   IconLogin,
   IconMoodHappy,
   IconTypography,
   IconUserPlus,
+  IconUsers,
+  IconReceipt2,
+  IconStethoscope,
+  IconPill,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -28,15 +33,33 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Typography",
-    icon: IconTypography,
-    href: "/utilities/typography",
+    title: "Addresses",
+    icon: IconMapPin,
+    href: "/utilities/addresses",
   },
   {
     id: uniqueId(),
-    title: "Shadow",
-    icon: IconCopy,
-    href: "/utilities/shadow",
+    title: "Customers",
+    icon: IconUsers,
+    href: "/utilities/customers",
+  },
+  {
+    id: uniqueId(),
+    title: "Prescriptions",
+    icon: IconReceipt2,
+    href: "/utilities/prescriptions",
+  },
+  {
+    id: uniqueId(),
+    title: "Physicians",
+    icon: IconStethoscope,
+    href: "/utilities/physicians",
+  },
+  {
+    id: uniqueId(),
+    title: "Prescription Items",
+    icon: IconPill,
+    href: "/utilities/prescription-items",
   },
   {
     navlabel: true,

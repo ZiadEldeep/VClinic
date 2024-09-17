@@ -1,3 +1,4 @@
+// @/component/CustomerForm
 import React from 'react';
 import { Form, Input, Select, DatePicker, Button } from 'antd';
 import { useForm } from 'react-hook-form';
@@ -6,7 +7,7 @@ import { CustomerFormData, customerSchema } from '@/lib/schemas/customerSchema';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 
-const CustomerForm = () => {
+const CustomerForm = ({refetch}:{refetch:()=>void}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
   });
@@ -22,6 +23,7 @@ const CustomerForm = () => {
 
       if (response.ok) {
         toast.success('Customer created successfully!');
+        refetch()
       } else {
         toast.error('Failed to create customer.');
       }
@@ -58,7 +60,7 @@ const CustomerForm = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">Create Customer</Button>
+          <Button className='bg-[#5D87FF] hover:bg-[#5381fe]' htmlType="submit">Create Customer</Button>
         </Form.Item>
       </Form>
     </motion.div>

@@ -1,3 +1,5 @@
+// @/component/PrescriptionItemForm
+
 import React from "react";
 import { Form, Input, Button, InputNumber } from "antd";
 import { useForm } from "react-hook-form";
@@ -9,7 +11,7 @@ import {
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 
-const PrescriptionItemForm = () => {
+const PrescriptionItemForm = ({refetch}:{refetch:()=>void}) => {
   // Initialize the form with the schema for validation
   const {
     register,
@@ -33,6 +35,7 @@ const PrescriptionItemForm = () => {
 
       if (response.ok) {
         toast.success("Prescription item created successfully!");
+        refetch()
       } else {
         toast.error("Failed to create prescription item.");
       }
@@ -110,7 +113,7 @@ const PrescriptionItemForm = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button className='bg-[#5D87FF] hover:bg-[#5381fe]' htmlType="submit">
             Create Prescription Item
           </Button>
         </Form.Item>
