@@ -1,30 +1,41 @@
 import { NextResponse } from 'next/server';
-import { AddressModel } from '@/lib/models/Address';
-import { connectDB } from '@/mongoose';
+import { getAddresses, createAddress, updateAddress, deleteAddress } from '@/lib/services/addressService';
 
 export async function GET(request: Request) {
-  await connectDB();
-  const addresses = await AddressModel.find({});
-  return NextResponse.json(addresses);
+  try {
+    const addresses = await getAddresses();
+    return NextResponse.json(addresses);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch addresses' }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  await connectDB();
-  const { hospitalName, hospitalId, city, country, state, zipCode } = await request.json();
-  const newAddress = await AddressModel.create({ hospitalName, hospitalId, city, country, state, zipCode });
-  return NextResponse.json(newAddress, { status: 201 });
+  try {
+    const addressData = await request.json();
+    const newAddress = await createAddress(addressData);
+    return NextResponse.json(newAddress, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create address' }, { status: 500 });
+  }
 }
 
 export async function PUT(request: Request) {
-  await connectDB();
-  const { id, hospitalName, hospitalId, city, country, state, zipCode } = await request.json();
-  const updatedAddress = await AddressModel.findByIdAndUpdate(id, { hospitalName, hospitalId, city, country, state, zipCode }, { new: true });
-  return NextResponse.json(updatedAddress);
+  try {
+    const addressData = await request.json();
+    const updatedAddress = await updateAddress(addressData);
+    return NextResponse.json(updatedAddress);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update address' }, { status: 500 });
+  }
 }
 
 export async function DELETE(request: Request) {
-  await connectDB();
-  const { id } = await request.json();
-  await AddressModel.findByIdAndDelete(id);
-  return NextResponse.json({ message: 'Address deleted' });
+  try {
+    const { id } = await request.json();
+    const result = await deleteAddress(id);
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete address' }, { status: 500 });
+  }
 }

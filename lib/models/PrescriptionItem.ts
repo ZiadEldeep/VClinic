@@ -20,4 +20,4 @@ const PrescriptionItemSchema: Schema<IPrescriptionItem> = new Schema({
   hospitalId: { type: String, required: true },
 }, { timestamps: true });
 
-export const PrescriptionItemModel = mongoose.model<IPrescriptionItem>('PrescriptionItem', PrescriptionItemSchema);
+export const PrescriptionItemModel = mongoose.models.PrescriptionItem|| mongoose.model<IPrescriptionItem>('PrescriptionItem', PrescriptionItemSchema);

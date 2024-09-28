@@ -18,4 +18,4 @@ const AddressSchema: Schema<IAddress> = new Schema({
   zipCode: { type: String, required: true },
 }, { timestamps: true });
 
-export const AddressModel = mongoose.model<IAddress>('Address', AddressSchema);
+export const AddressModel =mongoose.models.Address|| mongoose.model<IAddress>('Address', AddressSchema);

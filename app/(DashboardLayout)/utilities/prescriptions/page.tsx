@@ -27,7 +27,7 @@ const PrescriptionsPage = () => {
     queryFn: fetchPrescriptions,
   });
 
-  if (isLoading) return <Spin />;
+  
   
   if (isError) return <Alert message="Failed to load prescriptions." type="error" />;
 
@@ -38,6 +38,9 @@ const PrescriptionsPage = () => {
         <PrescriptionForm refetch={refetch}/>
       </div>
       <Row gutter={[16, 16]} justify="center">
+      {isLoading &&<div className="w-full h-full flex justify-center items-center">
+  <Spin />
+  </div>}
         {data?.map((prescription) => (
           <Col key={prescription.id} xs={24} sm={12} md={8} lg={6}>
             <Card title={<><IconClipboard /> Prescription ID: {prescription.id}</>} hoverable>

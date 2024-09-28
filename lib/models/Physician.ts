@@ -14,4 +14,4 @@ const PhysicianSchema: Schema<IPhysician> = new Schema({
   hospitalName: { type: String, required: true },
 }, { timestamps: true });
 
-export const PhysicianModel = mongoose.model<IPhysician>('Physician', PhysicianSchema);
+export const PhysicianModel =mongoose.models.Physician|| mongoose.model<IPhysician>('Physician', PhysicianSchema);

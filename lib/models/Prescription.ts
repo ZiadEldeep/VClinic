@@ -16,4 +16,4 @@ const PrescriptionSchema: Schema<IPrescription> = new Schema({
   pfd: { type: String, required: true },
 }, { timestamps: true });
 
-export const PrescriptionModel = mongoose.model<IPrescription>('Prescription', PrescriptionSchema);
+export const PrescriptionModel = mongoose.models.Prescription|| mongoose.model<IPrescription>('Prescription', PrescriptionSchema);

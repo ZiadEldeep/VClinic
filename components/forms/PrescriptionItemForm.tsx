@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Form, Input, Button, InputNumber } from "antd";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   PrescriptionItemFormData,
@@ -10,11 +10,12 @@ import {
 } from "@/lib/schemas/prescriptionItemSchema";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import styles from '@/styles/PrescriptionItemForm.module.css'; // Assuming you have a CSS module for custom styles
 
-const PrescriptionItemForm = ({refetch}:{refetch:()=>void}) => {
+const PrescriptionItemForm = ({ refetch }: { refetch: () => void }) => {
   // Initialize the form with the schema for validation
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<PrescriptionItemFormData>({
@@ -35,7 +36,7 @@ const PrescriptionItemForm = ({refetch}:{refetch:()=>void}) => {
 
       if (response.ok) {
         toast.success("Prescription item created successfully!");
-        refetch()
+        refetch();
       } else {
         toast.error("Failed to create prescription item.");
       }
@@ -48,67 +49,103 @@ const PrescriptionItemForm = ({refetch}:{refetch:()=>void}) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}>
+      exit={{ opacity: 0 }}
+    >
       <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
         <Form.Item label="Prescription ID" required>
-          <Input {...register("prescriptionId")} />
+          <Controller
+            name="prescriptionId"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} className={errors.prescriptionId ? styles.inputError : ''} />
+            )}
+          />
           {errors.prescriptionId && (
-            <span style={{ color: "red" }}>
+            <span className={styles.errorText}>
               {errors.prescriptionId.message}
             </span>
           )}
         </Form.Item>
 
         <Form.Item label="Drug ID" required>
-          <Input {...register("drugId")} />
+          <Controller
+            name="drugId"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} className={errors.drugId ? styles.inputError : ''} />
+            )}
+          />
           {errors.drugId && (
-            <span style={{ color: "red" }}>{errors.drugId.message}</span>
+            <span className={styles.errorText}>{errors.drugId.message}</span>
           )}
         </Form.Item>
 
         <Form.Item label="Medicines Name" required>
-          <Input {...register("medicinesName")} />
+          <Controller
+            name="medicinesName"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} className={errors.medicinesName ? styles.inputError : ''} />
+            )}
+          />
           {errors.medicinesName && (
-            <span style={{ color: "red" }}>{errors.medicinesName.message}</span>
+            <span className={styles.errorText}>{errors.medicinesName.message}</span>
           )}
         </Form.Item>
 
         <Form.Item label="Quantity" required>
-          <InputNumber
-            name={register("quantity").name}
-            onVolumeChange={register("quantity").onChange}
-            ref={register("quantity").ref}
-            required={register("quantity").required}
-            pattern={register("quantity").pattern}
-            onBlur={register("quantity").onBlur}
-            max={register("quantity").max}
-            min={register("quantity").min}
-            maxLength={register("quantity").maxLength}
-            minLength={register("quantity").minLength}
+          <Controller
+            name="quantity"
+            control={control}
+            render={({ field }) => (
+              <InputNumber
+                {...field}
+                min={1}
+                className={errors.quantity ? styles.inputError : ''}
+              />
+            )}
           />
           {errors.quantity && (
-            <span style={{ color: "red" }}>{errors.quantity.message}</span>
+            <span className={styles.errorText}>{errors.quantity.message}</span>
           )}
         </Form.Item>
 
         <Form.Item label="Date of Expiry">
-          <Input {...register("doe")} type="date" />
+          <Controller
+            name="doe"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} type="date" className={errors.doe ? styles.inputError : ''} />
+            )}
+          />
           {errors.doe && (
-            <span style={{ color: "red" }}>{errors.doe.message}</span>
+            <span className={styles.errorText}>{errors.doe.message}</span>
           )}
         </Form.Item>
 
         <Form.Item label="Internal Tracking Code (ITC)">
-          <Input {...register("itc")} />
+          <Controller
+            name="itc"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} className={errors.itc ? styles.inputError : ''} />
+            )}
+          />
           {errors.itc && (
-            <span style={{ color: "red" }}>{errors.itc.message}</span>
+            <span className={styles.errorText}>{errors.itc.message}</span>
           )}
         </Form.Item>
 
         <Form.Item label="Hospital ID" required>
-          <Input {...register("hospitalId")} />
+          <Controller
+            name="hospitalId"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} className={errors.hospitalId ? styles.inputError : ''} />
+            )}
+          />
           {errors.hospitalId && (
-            <span style={{ color: "red" }}>{errors.hospitalId.message}</span>
+            <span className={styles.errorText}>{errors.hospitalId.message}</span>
           )}
         </Form.Item>
 

@@ -1,0 +1,10 @@
+.inputError {
+    border-color: red; /* Change this to your desired error color */
+  }
+  
+  .errorText {
+    color: red; /* Change this to your desired error color */
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  

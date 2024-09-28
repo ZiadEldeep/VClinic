@@ -1,30 +1,41 @@
 import { NextResponse } from 'next/server';
-import { PrescriptionItemModel } from '@/lib/models/PrescriptionItem';
-import { connectDB } from '@/mongoose';
+import { getPrescriptionItems, createPrescriptionItem, updatePrescriptionItem, deletePrescriptionItem } from '@/lib/services/prescriptionItemService';
 
 export async function GET(request: Request) {
-  await connectDB();
-  const prescriptionItems = await PrescriptionItemModel.find({});
-  return NextResponse.json(prescriptionItems);
+  try {
+    const prescriptionItems = await getPrescriptionItems();
+    return NextResponse.json(prescriptionItems);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch prescription items' }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  await connectDB();
-  const { prescriptionId, drugId, medicineName, quantity, doe, itc, hospitalId } = await request.json();
-  const newPrescriptionItem = await PrescriptionItemModel.create({ prescriptionId, drugId, medicineName, quantity, doe, itc, hospitalId });
-  return NextResponse.json(newPrescriptionItem, { status: 201 });
+  try {
+    const prescriptionItemData = await request.json();
+    const newPrescriptionItem = await createPrescriptionItem(prescriptionItemData);
+    return NextResponse.json(newPrescriptionItem, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create prescription item' }, { status: 500 });
+  }
 }
 
 export async function PUT(request: Request) {
-  await connectDB();
-  const { id, prescriptionId, drugId, medicineName, quantity, doe, itc, hospitalId } = await request.json();
-  const updatedPrescriptionItem = await PrescriptionItemModel.findByIdAndUpdate(id, { prescriptionId, drugId, medicineName, quantity, doe, itc, hospitalId }, { new: true });
-  return NextResponse.json(updatedPrescriptionItem);
+  try {
+    const { id, ...prescriptionItemData } = await request.json();
+    const updatedPrescriptionItem = await updatePrescriptionItem(id, prescriptionItemData);
+    return NextResponse.json(updatedPrescriptionItem);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update prescription item' }, { status: 500 });
+  }
 }
 
 export async function DELETE(request: Request) {
-  await connectDB();
-  const { id } = await request.json();
-  await PrescriptionItemModel.findByIdAndDelete(id);
-  return NextResponse.json({ message: 'Prescription item deleted' });
+  try {
+    const { id } = await request.json();
+    const result = await deletePrescriptionItem(id);
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete prescription item' }, { status: 500 });
+  }
 }

@@ -1,30 +1,41 @@
 import { NextResponse } from 'next/server';
-import { PhysicianModel } from '@/lib/models/Physician';
-import { connectDB } from '@/mongoose';
+import { getPhysicians, createPhysician, updatePhysician, deletePhysician } from '@/lib/services/physicianService';
 
 export async function GET(request: Request) {
-  await connectDB();
-  const physicians = await PhysicianModel.find({});
-  return NextResponse.json(physicians);
+  try {
+    const physicians = await getPhysicians();
+    return NextResponse.json(physicians);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch physicians' }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  await connectDB();
-  const { physicianId, name, details, hospitalName } = await request.json();
-  const newPhysician = await PhysicianModel.create({ physicianId, name, details, hospitalName });
-  return NextResponse.json(newPhysician, { status: 201 });
+  try {
+    const physicianData = await request.json();
+    const newPhysician = await createPhysician(physicianData);
+    return NextResponse.json(newPhysician, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create physician' }, { status: 500 });
+  }
 }
 
 export async function PUT(request: Request) {
-  await connectDB();
-  const { id, physicianId, name, details, hospitalName } = await request.json();
-  const updatedPhysician = await PhysicianModel.findByIdAndUpdate(id, { physicianId, name, details, hospitalName }, { new: true });
-  return NextResponse.json(updatedPhysician);
+  try {
+    const physicianData = await request.json();
+    const updatedPhysician = await updatePhysician(physicianData);
+    return NextResponse.json(updatedPhysician);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update physician' }, { status: 500 });
+  }
 }
 
 export async function DELETE(request: Request) {
-  await connectDB();
-  const { id } = await request.json();
-  await PhysicianModel.findByIdAndDelete(id);
-  return NextResponse.json({ message: 'Physician deleted' });
+  try {
+    const { id } = await request.json();
+    const result = await deletePhysician(id);
+    return NextResponse.json(result);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete physician' }, { status: 500 });
+  }
 }

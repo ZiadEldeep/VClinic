@@ -1,67 +1,123 @@
+// CustomerForm.tsx
 "use client";
 import React from 'react';
-import { Card, Tooltip, Spin, Col, Row, Alert } from 'antd';
-import { useQuery } from '@tanstack/react-query';
-import { Typography } from '@mui/material';
+import { Form, Input, Button, DatePicker, Select, Typography } from 'antd';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { IconUser, IconIdBadge, IconCalendar, IconGenderMale } from '@tabler/icons-react';
-import CustomerForm from '@/components/forms/CustomerForm';
 
-// Define Customer interface
-interface Customer {
-  id: string;
+const { Title } = Typography;
+
+// Define validation schema
+const customerSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(10, "Phone number is required"),
+  address: z.string().min(1, "Address is required"),
+  dob: z.string().min(1, "Date of Birth is required"),
+  gender: z.string().min(1, "Gender is required"),
+  medicalHistory: z.string().optional(),
+  allergies: z.string().optional(),
+  chronicDiseases: z.string().optional(), // Chronic diseases field
+  emergencyContact: z.string().optional(),
+});
+
+// Define form inputs type
+type CustomerFormInputs = {
   name: string;
-  dop: string; // Date of Purchase
+  email: string;
+  phone: string;
+  address: string;
+  dob: string;
   gender: string;
-}
-
-const fetchCustomers = async (): Promise<Customer[]> => {
-  const response = await axios.get('/api/customers');
-  return response.data;
+  medicalHistory?: string;
+  allergies?: string;
+  chronicDiseases?: string; // Chronic diseases field
+  emergencyContact?: string;
 };
 
-const CustomersPage = () => {
-  const { data, isLoading, isError,refetch } = useQuery<Customer[]>({
-    queryKey: ['customers'],
-    queryFn: fetchCustomers,
+const CustomerForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
+  const { register, handleSubmit, formState: { errors } } = useForm<CustomerFormInputs>({
+    resolver: zodResolver(customerSchema),
   });
 
-  if (isLoading) return <Spin />;
-  
-  if (isError) return <Alert message="Failed to load customers." type="error" />;
+  const onSubmit = async (data: CustomerFormInputs) => {
+    try {
+      await axios.post('/api/customers', data);
+      refetch();
+    } catch (error) {
+      console.error("Error adding customer:", error);
+    }
+  };
 
   return (
-    <div>
-      <Typography variant="h4">Customers</Typography>
-      <div className=" max-sm:w-full w-3/4">
+    <div className="p-6 bg-white shadow-md rounded-lg max-w-lg mx-auto">
+      <Title level={3} className="text-center mb-4">Add New Customer</Title>
+      <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+        
+        <Form.Item label="Name" required>
+          <Input placeholder="Enter customer's name" {...register("name")} />
+          {errors.name && <span className="text-red-500">{errors.name.message}</span>}
+        </Form.Item>
 
-        <CustomerForm refetch={refetch}/>
-      </div>
-      <Row gutter={[16, 16]} justify="center">
-        {data?.map((customer) => (
-          <Col key={customer.id} xs={24} sm={12} md={8} lg={6}>
-            <Card title={<><IconUser /> {customer.name}</>} hoverable>
-              <p>
-                <Tooltip title="Customer ID">
-                  <IconIdBadge /> {customer.id}
-                </Tooltip>
-              </p>
-              <p>
-                <Tooltip title="Date of Purchase">
-                  <IconCalendar /> {customer.dop}
-                </Tooltip>
-              </p>
-              <p>
-                <Tooltip title="Gender">
-                  <IconGenderMale /> {customer.gender}
-                </Tooltip>
-              </p>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+        <Form.Item label="Email" required>
+          <Input placeholder="Enter customer's email" {...register("email")} />
+          {errors.email && <span className="text-red-500">{errors.email.message}</span>}
+        </Form.Item>
+
+        <Form.Item label="Phone Number" required>
+          <Input placeholder="Enter customer's phone number" {...register("phone")} />
+          {errors.phone && <span className="text-red-500">{errors.phone.message}</span>}
+        </Form.Item>
+
+        <Form.Item label="Address" required>
+          <Input placeholder="Enter customer's address" {...register("address")} />
+          {errors.address && <span className="text-red-500">{errors.address.message}</span>}
+        </Form.Item>
+
+        <Form.Item label="Date of Birth" required>
+          <DatePicker style={{ width: '100%' }} placeholder="Select date of birth" {...register("dob")} />
+          {errors.dob && <span className="text-red-500">{errors.dob.message}</span>}
+        </Form.Item>
+
+        <Form.Item label="Gender" required>
+          <Select
+            placeholder="Select gender"
+            {...register("gender")}
+            options={[
+              { value: 'Male', label: 'Male' },
+              { value: 'Female', label: 'Female' },
+              { value: 'Other', label: 'Other' },
+            ]}
+          />
+          {errors.gender && <span className="text-red-500">{errors.gender.message}</span>}
+        </Form.Item>
+
+        <Form.Item label="Medical History">
+          <Input.TextArea placeholder="Enter any medical history" {...register("medicalHistory")} />
+        </Form.Item>
+
+        <Form.Item label="Allergies">
+          <Input.TextArea placeholder="Enter any allergies" {...register("allergies")} />
+        </Form.Item>
+
+        <Form.Item label="Chronic Diseases">
+          <Input.TextArea placeholder="Enter any chronic diseases" {...register("chronicDiseases")} />
+        </Form.Item>
+
+        <Form.Item label="Emergency Contact Information">
+          <Input placeholder="Enter emergency contact info" {...register("emergencyContact")} />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="w-full">
+            Add Customer
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };
 
-export default CustomersPage;
+export default CustomerForm;

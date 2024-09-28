@@ -26,7 +26,7 @@ const PhysiciansPage = () => {
     queryFn: fetchPhysicians,
   });
 
-  if (isLoading) return <Spin />;
+  
   
   if (isError) return <Alert message="Failed to load physicians." type="error" />;
 
@@ -38,6 +38,9 @@ const PhysiciansPage = () => {
         <PhysicianForm refetch={refetch}/>
       </div>
       <Row gutter={[16, 16]} justify="center">
+      {isLoading &&<div className="w-full h-full flex justify-center items-center">
+  <Spin />
+  </div>}
         {data?.map((physician) => (
           <Col key={physician.id} xs={24} sm={12} md={8} lg={6}>
             <Card title={<><IconStethoscope /> {physician.name}</>} hoverable>

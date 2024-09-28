@@ -28,7 +28,7 @@ const AddressesPage = () => {
     queryFn: fetchAddresses,
   });
 
-  if (isLoading) return <Spin />;
+  
   
   if (isError) return <Alert message="Failed to load addresses." type="error" />;
 
@@ -40,6 +40,9 @@ const AddressesPage = () => {
       <AddressForm refetch={refetch}/>
       </div>
       <Row gutter={[16, 16]} justify="center">
+      {isLoading &&<div className="w-full h-full flex justify-center items-center">
+  <Spin />
+  </div>}
         {data?.map((address) => (
           <Col key={address.hospitalId} xs={24} sm={12} md={8} lg={6}>
             <Card title={<><IconHome /> {address.hospitalName}</>} hoverable>
