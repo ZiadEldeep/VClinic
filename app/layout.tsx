@@ -4,6 +4,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import InfintyProvider from "@/components/providers/InfintyProvider";
 import "./global.css"
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function RootLayout({
   children,
 }: {
@@ -19,6 +21,7 @@ export default function RootLayout({
           <CssBaseline />
           {children}
         </ThemeProvider>
+        <ToastContainer/>
       </body>
     </html>
     </InfintyProvider>

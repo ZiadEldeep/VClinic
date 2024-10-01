@@ -8,25 +8,21 @@ import axios from 'axios';
 import Link from 'next/link';
 import { Modal, Input, Button, Form } from 'antd';
 import { Logo } from 'react-mui-sidebar';
-import { FaUser } from 'react-icons/fa'; // Import the person icon
+import { FaUser } from 'react-icons/fa'; 
 
-// Define the validation schema
 const prescriptionSchema = z.object({
   prescriptionUrl: z.string().url("Please upload your prescription file."),
 });
 
-// Define types for form inputs
 type PrescriptionFormInputs = {
   prescriptionUrl: string;
 };
 
-// Define types for patient info inputs
 type PatientInfoFormInputs = {
   disease: string;
   notes?: string;
 };
 
-// Navbar component
 const Navbar: React.FC = () => {
   return (
     <nav className="bg-[#7699ff] text-white p-4 flex justify-between items-center shadow-md">
@@ -46,8 +42,7 @@ const Navbar: React.FC = () => {
   );
 };
 
-// Main Prescription Upload component
-const PrescriptionUpload: React.FC = () => {
+  const PrescriptionUpload: React.FC = () => {
   const [prescriptionUrl, setPrescriptionUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [hexCode, setHexCode] = useState<string | null>(null);
@@ -65,11 +60,9 @@ const PrescriptionUpload: React.FC = () => {
       const fileUrl = URL.createObjectURL(file);
       setPrescriptionUrl(fileUrl);
       setFileName(file.name);
-
       const arrayBuffer = await file.arrayBuffer();
       const hex = arrayBufferToHex(arrayBuffer);
       setHexCode(hex);
-
       try {
         const formData = new FormData();
         formData.append('prescription', file);
