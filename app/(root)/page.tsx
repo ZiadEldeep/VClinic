@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Modal, Input, Button, Form } from 'antd';
 import { Logo } from 'react-mui-sidebar';
 import { FaUser } from 'react-icons/fa'; 
+import  Blog  from '@/app/(DashboardLayout)/components/dashboard/Blog';
 
 const prescriptionSchema = z.object({
   prescriptionUrl: z.string().url("Please upload your prescription file."),
@@ -181,6 +182,10 @@ const Navbar: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <div className="p-5">
+
+      <Blog/>
+      </div>
     </>
   );
 };
