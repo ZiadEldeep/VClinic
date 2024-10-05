@@ -71,7 +71,7 @@ const ImageCropper = ({ updateAvatar, closeModal, is9X16 }: { updateAvatar: (img
       >
         <input {...getInputProps({ className: "text-gray-900" })} />
         <span className="sr-only">Choose profile photo</span>
-        <p className="text-gray-900">Drag 'n' drop some files here, or click to select files</p>
+        <p className="text-gray-900">{`Drag 'n' drop some files here, or click to select files`}</p>
       </motion.div>
       {error && <p className="text-red-400 text-xs">{error}</p>}
       {imgSrc && (

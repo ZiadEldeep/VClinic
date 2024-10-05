@@ -116,7 +116,7 @@ const Navbar: React.FC = () => {
           <div 
             {...getRootProps({ className: 'border-dashed border-2 border-gray-300 p-6 rounded-md mb-4 cursor-pointer hover:border-[#7699ff] transition duration-200' })}>
             <input {...getInputProps()} />
-            <p className="text-center text-gray-600">Drag 'n' drop your prescription here, or click to select files</p>
+            <p className="text-center text-gray-600">{`Drag 'n' drop your prescription here, or click to select files`}</p>
           </div>
 
           {errors.prescriptionUrl && <p className="text-red-500">{errors.prescriptionUrl.message}</p>}

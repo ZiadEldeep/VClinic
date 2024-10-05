@@ -37,7 +37,7 @@ type CustomerFormInputs = {
   emergencyContact?: string;
 };
 
-const CustomerForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
+const CustomerForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<CustomerFormInputs>({
     resolver: zodResolver(customerSchema),
   });
@@ -45,7 +45,6 @@ const CustomerForm: React.FC<{ refetch: () => void }> = ({ refetch }) => {
   const onSubmit = async (data: CustomerFormInputs) => {
     try {
       await axios.post('/api/customers', data);
-      refetch();
     } catch (error) {
       console.error("Error adding customer:", error);
     }
