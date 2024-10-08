@@ -6,7 +6,8 @@ import InfintyProvider from "@/components/providers/InfintyProvider";
 import "../global.css"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Navbar } from "./page";
+import { Navbar } from "@/components/shared/Navbar";
+
 export default function RootLayout({
   children,
 }: {
