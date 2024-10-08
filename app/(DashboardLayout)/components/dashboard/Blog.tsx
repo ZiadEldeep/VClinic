@@ -1,4 +1,4 @@
-
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   CardContent,
@@ -7,22 +7,18 @@ import {
   Rating,
   Tooltip,
   Fab,
-  Avatar
+  Avatar,
 } from "@mui/material";
-// import img1 from "public/images/products/s4.jpg";
-// import img2 from "public/images/products/s5.jpg";
-// import img3 from "public/images/products/s7.jpg";
-// import img4 from "public/images/products/s11.jpg";
 import { Stack } from "@mui/system";
 import { IconBasket } from "@tabler/icons-react";
 import BlankCard from "@/app/(DashboardLayout)/components/shared/BlankCard";
-import Image from "next/image";
-
+import { useCartStore } from "@/lib/zustant/useCartStore";
+import { toast } from "react-toastify";
 const ecoCard = [
   {
     title: "Paracetamol 500mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/PHOTO-2024-10-05-02-24-29.jpg',
+    photo: "/images/products/PHOTO-2024-10-05-02-24-29.jpg",
     salesPrice: 25,
     price: 30,
     rating: 5,
@@ -30,7 +26,7 @@ const ecoCard = [
   {
     title: "Amoxicillin 250mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/ذمممم.jpeg',
+    photo: "/images/products/ذمممم.jpeg",
     salesPrice: 75,
     price: 85,
     rating: 4,
@@ -38,7 +34,7 @@ const ecoCard = [
   {
     title: "Ibuprofen 200mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/2222.jpeg',
+    photo: "/images/products/2222.jpeg",
     salesPrice: 45,
     price: 50,
     rating: 3,
@@ -46,7 +42,7 @@ const ecoCard = [
   {
     title: "Cough Syrup 100ml",
     subheader: "September 14, 2023",
-    photo: '/images/products/٤٥٨٩٠.jpeg',
+    photo: "/images/products/٤٥٨٩٠.jpeg",
     salesPrice: 35,
     price: 40,
     rating: 4,
@@ -54,7 +50,7 @@ const ecoCard = [
   {
     title: "Aspirin 100mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/٦٦٦٦.jpeg',
+    photo: "/images/products/٦٦٦٦.jpeg",
     salesPrice: 20,
     price: 25,
     rating: 4,
@@ -62,7 +58,7 @@ const ecoCard = [
   {
     title: "Vitamin C 500mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/٦٦٧٨٦٥٦٧٨٩.jpeg',
+    photo: "/images/products/٦٦٧٨٦٥٦٧٨٩.jpeg",
     salesPrice: 60,
     price: 70,
     rating: 5,
@@ -70,7 +66,7 @@ const ecoCard = [
   {
     title: "Cetirizine 10mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/٦٦٧٨٩٩٩٩٩٩.jpeg',
+    photo: "/images/products/٦٦٧٨٩٩٩٩٩٩.jpeg",
     salesPrice: 30,
     price: 35,
     rating: 3,
@@ -78,7 +74,7 @@ const ecoCard = [
   {
     title: "Omeprazole 20mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/٦٧٦٥٤٥٦٧٨٩٠.jpeg',
+    photo: "/images/products/٦٧٦٥٤٥٦٧٨٩٠.jpeg",
     salesPrice: 50,
     price: 55,
     rating: 4,
@@ -86,7 +82,7 @@ const ecoCard = [
   {
     title: "Metformin 500mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/٧٧٧٧٧.jpeg',
+    photo: "/images/products/٧٧٧٧٧.jpeg",
     salesPrice: 40,
     price: 45,
     rating: 4,
@@ -94,7 +90,7 @@ const ecoCard = [
   {
     title: "Loratadine 10mg",
     subheader: "September 14, 2023",
-    photo: '/images/products/2222.jpeg',
+    photo: "/images/products/2222.jpeg",
     salesPrice: 25,
     price: 30,
     rating: 3,
@@ -102,7 +98,7 @@ const ecoCard = [
   {
     title: "Antibiotic Cream 15g",
     subheader: "September 14, 2023",
-    photo: '/images/products/PHOTO-2024-10-05-02-24-29.jpg',
+    photo: "/images/products/PHOTO-2024-10-05-02-24-29.jpg",
     salesPrice: 20,
     price: 25,
     rating: 4,
@@ -110,15 +106,38 @@ const ecoCard = [
   {
     title: "Insulin Injection 10ml",
     subheader: "September 14, 2023",
-    photo: '/images/products/ذمممم.jpeg',
+    photo: "/images/products/ذمممم.jpeg",
     salesPrice: 150,
     price: 160,
     rating: 5,
-  }, 
+  },
 ];
-
-
 const Blog = () => {
+  const addToCart = useCartStore((state) => state.addToCart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const isInCart = useCartStore((state) => state.isInCart);
+
+  const [cartItems, setCartItems] = useState<string[]>([]);
+
+  useEffect(() => {
+    const storedItems = localStorage.getItem("cartItems");
+    if (storedItems) {
+      setCartItems(JSON.parse(storedItems));
+    }
+  }, []);
+
+  const handleCartToggle = (product: typeof ecoCard[0]) => {
+    if (isInCart(product.title)) {
+      removeFromCart(product.title);
+      setCartItems((prev) => prev.filter((item) => item !== product.title));
+      toast.info(`${product.title} has been removed from your cart!`); // Notify removal
+    } else {
+      addToCart(product);
+      setCartItems((prev) => [...prev, product.title]);
+      toast.success(`${product.title} has been added to your cart!`); // Notify addition
+    }
+  };
+
   return (
     <Grid container spacing={3}>
       {ecoCard.map((product, index) => (
@@ -126,19 +145,28 @@ const Blog = () => {
           <BlankCard>
             <Typography component={Link} href="/">
               <Avatar
-                src={product.photo} variant="square"
+                src={product.photo}
+                variant="square"
                 sx={{
                   height: 250,
-                  width: '100%',
+                  width: "100%",
                 }}
-                
               />
             </Typography>
             <Tooltip title="Add To Cart">
               <Fab
                 size="small"
-                color="primary"
-                sx={{ bottom: "75px", right: "15px", position: "absolute" }}
+                sx={{
+                  bottom: "75px",
+                  right: "15px",
+                  position: "absolute",
+                  backgroundColor: cartItems.includes(product.title) ? "red" : "blue",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: cartItems.includes(product.title) ? "darkred" : "darkblue",
+                  },
+                }}
+                onClick={() => handleCartToggle(product)}
               >
                 <IconBasket size="16" />
               </Fab>
@@ -177,3 +205,4 @@ const Blog = () => {
 };
 
 export default Blog;
+

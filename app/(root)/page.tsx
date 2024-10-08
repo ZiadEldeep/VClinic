@@ -1,15 +1,17 @@
 "use client";
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
-import Link from 'next/link';
-import { Modal, Input, Button, Form } from 'antd';
-import { Logo } from 'react-mui-sidebar';
-import { FaUser } from 'react-icons/fa'; 
-import  Blog  from '@/app/(DashboardLayout)/components/dashboard/Blog';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import Link from "next/link";
+import { Modal, Input, Button, Form } from "antd";
+import { Logo } from "react-mui-sidebar";
+import { FaUser } from "react-icons/fa";
+import Blog from "@/app/(DashboardLayout)/components/dashboard/Blog";
+import { Fab, Tooltip } from "@mui/material";
+import { IconBasket } from "@tabler/icons-react";
 
 const prescriptionSchema = z.object({
   prescriptionUrl: z.string().url("Please upload your prescription file."),
@@ -24,18 +26,38 @@ type PatientInfoFormInputs = {
   notes?: string;
 };
 
-const Navbar: React.FC = () => {
+export const Navbar: React.FC = () => {
   return (
     <nav className="bg-[#7699ff] text-white p-4 flex justify-between items-center shadow-md">
       <div>
-        <img src="/images/logos/dark-logo.svg" className="w-60 h-12" alt="Logo" />
+      <Link
+          href="/">
+        <img
+          src="/images/logos/dark-logo.svg"
+          className="w-60 h-12"
+          alt="Logo"
+        />
+          </Link>
       </div>
       <div className="flex items-center">
-        <Link href="/register" className="mr-4 hover:text-gray-200 transition duration-200">
+        <Tooltip title="Cart">
+        <Link
+          href="/cart"
+          className="flex items-center gap-3 mr-4 hover:text-gray-200 transition duration-200">
+
+              <IconBasket size="20" />
+              Cart
+        </Link>
+          </Tooltip>
+        <Link
+          href="/authentication/register"
+          className="mr-4 hover:text-gray-200 transition duration-200">
           Register
         </Link>
         <FaUser className="mx-2" /> {/* Person icon added here */}
-        <Link href="/login" className="hover:text-gray-200 transition duration-200">
+        <Link
+          href="/authentication/login"
+          className="hover:text-gray-200 transition duration-200">
           Login
         </Link>
       </div>
@@ -43,17 +65,24 @@ const Navbar: React.FC = () => {
   );
 };
 
-  const PrescriptionUpload: React.FC = () => {
+const PrescriptionUpload: React.FC = () => {
   const [prescriptionUrl, setPrescriptionUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [hexCode, setHexCode] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { handleSubmit, setValue, formState: { errors } } = useForm<PrescriptionFormInputs>({
+  const {
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<PrescriptionFormInputs>({
     resolver: zodResolver(prescriptionSchema),
   });
 
-  const { handleSubmit: handlePatientInfoSubmit, register: registerPatientInfo } = useForm<PatientInfoFormInputs>();
+  const {
+    handleSubmit: handlePatientInfoSubmit,
+    register: registerPatientInfo,
+  } = useForm<PatientInfoFormInputs>();
 
   const onDrop = async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -66,13 +95,17 @@ const Navbar: React.FC = () => {
       setHexCode(hex);
       try {
         const formData = new FormData();
-        formData.append('prescription', file);
+        formData.append("prescription", file);
 
-        const response = await axios.post('/api/upload-prescription', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.post(
+          "/api/upload-prescription",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
         const uploadedUrl = response.data.url;
         setValue("prescriptionUrl", uploadedUrl);
@@ -85,20 +118,20 @@ const Navbar: React.FC = () => {
   const arrayBufferToHex = (buffer: ArrayBuffer): string => {
     const byteArray = new Uint8Array(buffer);
     return Array.from(byteArray)
-      .map((byte) => byte.toString(16).padStart(2, '0'))
-      .join('');
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      'application/pdf': [],
-      'image/*': [],
+      "application/pdf": [],
+      "image/*": [],
     },
   });
 
   const onSubmit = (data: PrescriptionFormInputs) => {
-    console.log('Uploaded prescription URL:', data.prescriptionUrl);
+    console.log("Uploaded prescription URL:", data.prescriptionUrl);
   };
 
   const handleAddPatientInfo = (data: PatientInfoFormInputs) => {
@@ -108,18 +141,25 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+
       <div className="max-w-xl mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg border border-gray-300">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Upload Your Prescription</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Upload Your Prescription
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div 
-            {...getRootProps({ className: 'border-dashed border-2 border-gray-300 p-6 rounded-md mb-4 cursor-pointer hover:border-[#7699ff] transition duration-200' })}>
+          <div
+            {...getRootProps({
+              className:
+                "border-dashed border-2 border-gray-300 p-6 rounded-md mb-4 cursor-pointer hover:border-[#7699ff] transition duration-200",
+            })}>
             <input {...getInputProps()} />
             <p className="text-center text-gray-600">{`Drag 'n' drop your prescription here, or click to select files`}</p>
           </div>
 
-          {errors.prescriptionUrl && <p className="text-red-500">{errors.prescriptionUrl.message}</p>}
+          {errors.prescriptionUrl && (
+            <p className="text-red-500">{errors.prescriptionUrl.message}</p>
+          )}
 
           {fileName && (
             <div className="mt-4">
@@ -128,15 +168,17 @@ const Navbar: React.FC = () => {
               {prescriptionUrl && (
                 <div className="mt-2">
                   <h3 className="text-lg font-semibold">Preview:</h3>
-                  <img 
-                    src={prescriptionUrl} 
-                    alt="Prescription Preview" 
-                    className="mt-2 border rounded-md" 
-                    style={{ maxWidth: '100%', maxHeight: '300px' }} 
+                  <img
+                    src={prescriptionUrl}
+                    alt="Prescription Preview"
+                    className="mt-2 border rounded-md"
+                    style={{ maxWidth: "100%", maxHeight: "300px" }}
                   />
                 </div>
               )}
-              <p className="mt-2">Uploaded Prescription URL: {prescriptionUrl}</p>
+              <p className="mt-2">
+                Uploaded Prescription URL: {prescriptionUrl}
+              </p>
               {hexCode && (
                 <div className="mt-2">
                   <h3 className="text-lg font-semibold">Hexadecimal Code:</h3>
@@ -146,17 +188,16 @@ const Navbar: React.FC = () => {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="bg-[#7699ff] text-white p-3 rounded-md mt-4 w-full hover:bg-blue-600 transition duration-200 shadow-md">
             Upload Prescription
           </button>
         </form>
 
-        <button 
+        <button
           className="bg-green-500 text-white p-3 rounded-md mt-4 w-full hover:bg-green-600 transition duration-200 shadow-md"
-          onClick={() => setIsModalVisible(true)}
-        >
+          onClick={() => setIsModalVisible(true)}>
           Add New Patient Info
         </button>
       </div>
@@ -166,10 +207,12 @@ const Navbar: React.FC = () => {
         title="Add New Patient Info"
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
+        footer={null}>
         <Form onFinish={handlePatientInfoSubmit(handleAddPatientInfo)}>
-          <Form.Item label="Disease" name="disease" rules={[{ required: true, message: 'Please enter a disease' }]}>
+          <Form.Item
+            label="Disease"
+            name="disease"
+            rules={[{ required: true, message: "Please enter a disease" }]}>
             <Input {...registerPatientInfo("disease")} />
           </Form.Item>
           <Form.Item label="Notes">
@@ -183,8 +226,7 @@ const Navbar: React.FC = () => {
         </Form>
       </Modal>
       <div className="p-5">
-
-      <Blog/>
+        <Blog />
       </div>
     </>
   );
